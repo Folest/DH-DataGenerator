@@ -37,45 +37,69 @@ namespace DataGenerator
         {
 
             //moment t0
-            var models = CarModelGenerator.Generate(WorldSettings.ModelCount)
+            var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount)
                 .ToList();
 
-            var initialCarsBatches = models
+            var t0CarBatches = t0Models
                 .Select(m => m.CreateBatch(Settings.Random.Next(WorldSettings.CarBatchSizeRange.min, WorldSettings.CarBatchSizeRange.max)));
 
-            var carsT0 = initialCarsBatches
+            var t0Cars = t0CarBatches
                 .SelectMany(modelGroup => modelGroup.Select(car => car));
 
-
             //transmission from t0 to t1
-            var users = UserGenerator.Generate(50000).Distinct().ToList();
+            var t1CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(20, 50)));
+            var t1AdditionalCars = t1CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
 
-            var additionalCarBatches = models.Select(m => m.CreateBatch(Settings.Random.Next(5, 20)));
-            var additionalCars = additionalCarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
-
-            var carsT1 = carsT0.Concat(additionalCars).ToList();
+            var t1Cars = t0Cars.Concat(t1AdditionalCars).ToList();
+            var t1Users = UserGenerator.Generate(50000).Distinct().ToList();
 
             Console.WriteLine("Creating rents");
-            //var rents = RentGenerator.GenerateForCarsAndUsers(carsT1, users, Settings.SystemStartDate,
+            var sw = Stopwatch.StartNew();
+
+
+            //var t1Rentals = RentGenerator.GenerateForCarsAndUsers(t1Cars, t1Users, Settings.SystemStartDate,
             //Settings.FirstDataCollection, 10000).ToList();
 
-            var sw = Stopwatch.StartNew();
-            var rentals = await RentGenerator.Generate(carsT1, users, Settings.SystemStartDate,
-                Settings.FirstDataCollection, 50000);
+            var t1Rentals = await RentGenerator.Generate(t1Cars, t1Users, Settings.SystemStartDate,
+                Settings.FirstDataCollection, 20000);
 
-            Console.WriteLine($"Rent generation took {sw.Elapsed.Seconds} seconds");
+
+            Console.WriteLine($"Rent T1 generation took {sw.Elapsed.Seconds} seconds");
 
             sw.Restart();
-            carsT1.ForEach(c =>
+            t1Cars.ForEach(c =>
             {
-                c.GenerateServiceData(rentals, 
-                    c.DataZakupu, 
+                c.GenerateServiceData(t1Rentals,
+                    c.DataZakupu,
                     Settings.FirstDataCollection,
                     Settings.FirstDataCollection);
             });
-            Console.WriteLine($"Service data generation took {sw.Elapsed.Seconds} seconds");
+            Console.WriteLine($"Service T1 data generation took {sw.Elapsed.Seconds} seconds");
 
+            //transmission from t0 to t1
+            var t2CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(20, 50)));
 
+            var t2AdditionalCars = t2CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
+            var t2AdditionalUsers = UserGenerator.Generate(20000).Distinct().ToList();
+
+            var t2Cars = t1Cars.Concat(t2AdditionalCars).ToList();
+            var t2Users = t1Users.Concat(t2AdditionalUsers).Distinct();
+
+            sw.Restart();
+            var t2Rentals = await RentGenerator.Generate(t2Cars, t2Users, Settings.FirstDataCollection,
+                Settings.SecondDataCollection, 20000);
+
+            Console.WriteLine($"Rent T2 generation took {sw.Elapsed.Seconds} seconds");
+
+            sw.Restart();
+            t1Cars.ForEach(c =>
+            {
+                c.GenerateServiceData(t2Rentals,
+                    Settings.FirstDataCollection,
+                    Settings.SecondDataCollection,
+                    Settings.SecondDataCollection);
+            });
+            Console.WriteLine($"Service T2 data generation took {sw.Elapsed.Seconds} seconds");
 
             Console.WriteLine("finished");
         }
