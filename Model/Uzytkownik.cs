@@ -11,7 +11,9 @@ namespace DataGenerator.Model
         public bool IsMale { get; set; }
         public DateTime DataUrodzenia { get; set; }
         public DateTime DataRejestracji { get; set; }
+        public int PrawoJazdyId { get; set; }
 
+        public PrawoJazdy PrawoJazdy { get; set; }
         public IList<Wynajem> Rentals { get; set; } = new List<Wynajem>();
 
         public bool Equals(Uzytkownik other)

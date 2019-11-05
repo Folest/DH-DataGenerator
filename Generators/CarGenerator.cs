@@ -10,9 +10,6 @@ namespace DataGenerator.Generators
         internal static class CarSettings
         {
             public static IEnumerable<string> ColorPool = new[] {"Czerwony", "Niebieski", "Szary", "Czarny", "Srebrny"};
-
-            public static IEnumerable<char> VinCharPool = Settings.UpperCases.Where(c => c != 'O' && c != 'Q' && c != 'I').ToList();
-
         }
 
         public static (DateTime oldest, DateTime newest) PurchaseDateRange =
@@ -33,8 +30,9 @@ namespace DataGenerator.Generators
                 Kolor = CarSettings.ColorPool.ElementAt(Settings.Random.Next(CarSettings.ColorPool.Count())),
                 Vin = Settings.RandomVin(),
                 Dostepny = true,
-                ObszaryDzialalnosciNazwa = "TODO"
+                ObszaryDzialalnosciNazwa = ObszarDzialalnosci.DefaultArea.Nazwa
             });
+            //todo: unmock obszary dzialalnosci i dostepnosc
 
             return cars;
         }

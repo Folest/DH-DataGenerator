@@ -3,8 +3,12 @@ using DataGenerator.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using DataGenerator.Extensions;
+using Newtonsoft.Json;
 
 
 // {
@@ -44,7 +48,12 @@ namespace DataGenerator
                 .Select(m => m.CreateBatch(Settings.Random.Next(WorldSettings.CarBatchSizeRange.min, WorldSettings.CarBatchSizeRange.max)));
 
             var t0Cars = t0CarBatches
-                .SelectMany(modelGroup => modelGroup.Select(car => car));
+                .SelectMany(modelGroup => modelGroup.Select(car => car))
+                .ToArray();
+
+            // save to files
+            SaveAsScripts(t0Cars, null, t0Models);
+
 
             //transmission from t0 to t1
             var t1CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(20, 50)));
@@ -75,8 +84,13 @@ namespace DataGenerator
                     Settings.FirstDataCollection);
             });
             Console.WriteLine($"Service T1 data generation took {sw.Elapsed.Seconds} seconds");
+            
+            // saving to files
+            SaveAsJson(t1Cars.Select(c => c.Services).SelectMany(s => s).ToArray(), "t1");
+            SaveAsScripts(t1Cars, t1Users, t0Models, t1Rentals, "t1");
 
-            //transmission from t0 to t1
+
+            // transmission from t0 to t1
             var t2CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(20, 50)));
 
             var t2AdditionalCars = t2CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
@@ -102,6 +116,45 @@ namespace DataGenerator
             Console.WriteLine($"Service T2 data generation took {sw.Elapsed.Seconds} seconds");
 
             Console.WriteLine("finished");
+        }
+
+        public static void SaveAsScripts(
+            IEnumerable<Samochod> cars = null,
+            IEnumerable<Uzytkownik> users = null,
+            IEnumerable<ModelSamochodu> models = null,
+            IEnumerable<Wynajem> rentals = null,
+            string periodName = "t0")
+        {
+            if (models != null)
+            {
+                var script = models.ToInsert();
+                File.WriteAllText(periodName + "Modele.sql", script);
+            };
+
+            if (users != null)
+            {
+                var script = users.ToInsert();
+                File.WriteAllText(periodName + "Uzytkownicy.sql", script);
+            };
+
+            if (cars != null)
+            {
+                var script = cars.ToInsert();
+                File.WriteAllText(periodName + "Samochody.sql", script);
+            };
+
+            if (rentals != null)
+            {
+                var script = rentals.ToInsert();
+                File.WriteAllText(periodName + "Wynajmy.sql", script);
+            };
+        }
+
+        public static void SaveAsJson(IEnumerable<ServiceDataModel> services, string periodName = "t0")
+        {
+            var jsons = services.Select(JsonConvert.SerializeObject);
+
+            File.WriteAllLines(periodName + ".json", jsons);
         }
     }
 

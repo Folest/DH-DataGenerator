@@ -96,6 +96,8 @@ namespace DataGenerator.Generators
             rent.CzasPostoju = new TimeSpan(
                 (long)(rentTime.Ticks * Settings.Random.NextDouble() * RentSettings.MaxStandbyDurationFraction));
 
+            //todo: unmock it 
+            rent.CennikId = 0;
             rent.Vin = car.Vin;
             rent.Pesel = user.Pesel;
             rent.Id = Guid.NewGuid();
