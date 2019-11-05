@@ -19,8 +19,10 @@ namespace DataGenerator.Generators
             };
         }
 
+            //todo: This could be optimized
         public static IList<ServiceDataModel> GenerateForCar(
             Samochod car, 
+            IEnumerable<Wynajem> carRentals,
             DateTime minAdmittanceDate, 
             DateTime maxAdmittanceDate,
             DateTime stopGeneratingAfter, 
@@ -40,13 +42,27 @@ namespace DataGenerator.Generators
             }
 
             var servicingPeriods = new List<(DateTime, DateTime)>();
-            for (int i = 0; i < count; i++)
+            for (int i = 0, retryCounter = 0; i < count; i++)
             {
                 var admittanceDate = Settings.RandomDateBetween(minAdmittanceDate, maxAdmittanceDate);
                 var returnDate = admittanceDate.AddDays(Settings.Random.Next(ServiceDataModelSettings.MaxDurationDays));
 
-                servicingPeriods.Add((admittanceDate, returnDate));
+                var overlappingRentOrDefault = carRentals.FirstOrDefault(r =>
+                    (r.CzasRozpoczecia, r.CzasZakonczenia).OverlapsWith((admittanceDate, returnDate)));
 
+                if (overlappingRentOrDefault != default)
+                {
+                    if (retryCounter++ > 100)
+                    {
+                        Console.WriteLine("A pessimistic scenario just occured");
+                    }
+
+                    i--;
+                    continue;
+                }
+
+                retryCounter = 0;
+                servicingPeriods.Add((admittanceDate, returnDate));
                 if (returnDate > stopGeneratingAfter)
                 {
                     break;

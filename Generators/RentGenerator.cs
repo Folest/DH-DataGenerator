@@ -200,7 +200,7 @@ namespace DataGenerator.Generators
     {
         public static bool OverlapsWith(this (DateTime start, DateTime end) period, (DateTime start, DateTime end) other)
         {
-            return !(period.end < other.start && other.end < period.start);
+            return !(period.start > other.end || other.start > period.end);
         }
     }
 }
