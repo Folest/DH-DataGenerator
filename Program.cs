@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using DataGenerator.Generators;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -49,31 +50,29 @@ namespace DataGenerator
             //transmission from t0 to t1
             var users = UserGenerator.Generate(50000).Distinct().ToList();
 
-            //while (users.Any(u => users.Any(u2 => u2.Pesel == u.Pesel)))
-            //{
-            //    users = UserGenerator.Generate(50000);
-            //}
-
-            //var additionalCarBatches = models.Select(m => m.CreateBatch(Settings.Random.Next(5, 20)));
-            //var additionalCars = additionalCarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
+            var additionalCarBatches = models.Select(m => m.CreateBatch(Settings.Random.Next(5, 20)));
+            var additionalCars = additionalCarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
 
             var carsT1 = carsT0.ToList();
 
-            //carsT1.ForEach(c =>
-            //{
-            //    c.GenerateServiceData(c.DataZakupu,
-            //        Settings.FirstDataCollection,
-            //        Settings.FirstDataCollection,
-            //        Settings.Random.Next(4));
-            //});
+            carsT1.ForEach(c =>
+            {
+                c.GenerateServiceData(c.DataZakupu,
+                    Settings.FirstDataCollection,
+                    Settings.FirstDataCollection,
+                    Settings.Random.Next(4));
+            });
 
 
             Console.WriteLine("Creating rents");
             //var rents = RentGenerator.GenerateForCarsAndUsers(carsT1, users, Settings.SystemStartDate,
             //Settings.FirstDataCollection, 10000).ToList();
 
+            var sw = Stopwatch.StartNew();
             var result = await RentGenerator.Generate(carsT1, users, Settings.SystemStartDate,
-                Settings.FirstDataCollection, 100000);
+                Settings.FirstDataCollection, 20000);
+
+            Console.WriteLine($"Generation took {sw.Elapsed.Seconds} seconds");
 
             Console.WriteLine("finished");
         }
