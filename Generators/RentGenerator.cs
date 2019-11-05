@@ -96,8 +96,13 @@ namespace DataGenerator.Generators
             rent.CzasPostoju = new TimeSpan(
                 (long)(rentTime.Ticks * Settings.Random.NextDouble() * RentSettings.MaxStandbyDurationFraction));
 
-            //todo: unmock it 
-            rent.CennikId = 0;
+            rent.CennikId = Cennik.DefaultPriceList.Id;
+
+            rent.CenaGr = (int)(Cennik.DefaultPriceList.CenaPrzejazduKm * rent.OdlegloscKm + Cennik.DefaultPriceList.CenaPrzejazduMinuta * rentTime.Minutes);
+
+            rent.CenaZl = rent.CenaGr / 100;
+            rent.CenaGr %= 100;
+
             rent.Vin = car.Vin;
             rent.Pesel = user.Pesel;
             rent.Id = Guid.NewGuid();

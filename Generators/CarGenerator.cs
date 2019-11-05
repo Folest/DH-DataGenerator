@@ -19,11 +19,12 @@ namespace DataGenerator.Generators
         {
             var purchaseDate = Settings.RandomDateBetween(PurchaseDateRange.oldest, PurchaseDateRange.newest);
             var purchasePrice = Settings.Random.Next(model.PriceRange.Item1, model.PriceRange.Item2);
-            var automaticTransmission = Settings.Random.Next() % 2 == 0;
+            var automaticTransmission = Settings.Random.Next(3) % 2 == 0;
 
             var cars = Enumerable.Range(0, count).Select(_ => new Samochod
             {
                 Model = model,
+                ModelId = model.Id,
                 CenaZakupu = purchasePrice,
                 DataZakupu = purchaseDate,
                 SkrzyniaAutomatyczna = automaticTransmission,
