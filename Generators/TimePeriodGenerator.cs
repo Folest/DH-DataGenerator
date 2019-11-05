@@ -29,7 +29,6 @@ namespace DataGenerator.Generators
             DateTime t1, t2;
             if (Interlocked.Read(ref _count) <= 0)
             {
-                //t1 = t2 = DateTime.MinValue;
                 return new List<(DateTime, DateTime)>();
             }
             else
@@ -37,7 +36,7 @@ namespace DataGenerator.Generators
                 // assume we will succeed in creating a new span
                 Interlocked.Decrement(ref _count);
 
-                t1 = RandomDateBetween(start, stop);
+                t1 = RandomDateTimeBetween(start, stop);
 
                 var actualMaxDuration = stop.Subtract(t1).Ticks > maxDuration.Ticks
                     ? maxDuration
@@ -59,16 +58,16 @@ namespace DataGenerator.Generators
             return olderPeriodTask.Result.Append((t1, t2)).Concat(newerPeriodTask.Result);
         }
 
-        public static DateTime RandomDateBetween(DateTime oldest, DateTime newest)
+        public static DateTime RandomDateTimeBetween(DateTime oldest, DateTime newest)
         {
             if (oldest > newest)
             {
                 throw new Exception("Wrong argument order");
             }
+            var maxDuration = newest.Subtract(oldest).Ticks;
+            var duration = (long) (Random.NextDouble() * long.MaxValue) % maxDuration;
 
-            var maxDays = newest.Subtract(oldest).Days;
-
-            return oldest.AddDays(Random.Next() % maxDays);
+            return oldest.AddTicks(duration);
         }
     }
 }

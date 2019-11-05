@@ -64,12 +64,10 @@ namespace DataGenerator
             {
                 throw new Exception("Wrong argument order");
             }
+            var maxDuration = newest.Subtract(oldest).Ticks;
+            var duration = (long)(Random.NextDouble() * long.MaxValue) % maxDuration;
 
-            var maxDays = newest.Subtract(oldest).Days;
-
-            var day = oldest.AddDays(Random.Next() % maxDays);
-
-            return day.AddSeconds(Random.Next((24 * 60 * 60)));
+            return oldest.AddTicks(duration);
         }
     }
 }

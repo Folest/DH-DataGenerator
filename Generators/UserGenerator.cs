@@ -47,7 +47,7 @@ namespace DataGenerator.Generators
             user.Imie = namePool.ElementAtOrDefault(Settings.Random.Next(namePool.Count()));
 
             user.Pesel = $"{user.DataUrodzenia.Year.ToString().Substring(2, 2)}" +
-                         $"{user.DataUrodzenia.Month.ToString()}" +
+                         $"{(user.DataUrodzenia.Month < 10 ? "0" + user.DataUrodzenia.Month : user.DataUrodzenia.Month.ToString())}" +
                          $"{(user.DataUrodzenia.Day < 10 ? "0" + user.DataUrodzenia.Day : user.DataUrodzenia.Day.ToString())}" +
                          $"{Settings.RandomString(5, Settings.Numbers)}";
 
