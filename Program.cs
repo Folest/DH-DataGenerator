@@ -1,6 +1,7 @@
 ﻿using System;
 using DataGenerator.Generators;
 using System.Linq;
+using System.Threading.Tasks;
 using DataGenerator.Model;
 
 
@@ -22,37 +23,40 @@ namespace DataGenerator
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             // moment t0
-            var models = CarModelGenerator.Generate(50).ToList();
+            //var models = CarModelGenerator.Generate(50).ToList();
 
-            var initialCarsBatches = models.Select(m => m.CreateBatch(Settings.Random.Next(50, 100)));
-            var carsT0 = initialCarsBatches.SelectMany(modelGroup => modelGroup.Select(car => car)).ToList();
+            //var initialCarsBatches = models.Select(m => m.CreateBatch(Settings.Random.Next(50, 200)));
+            //var carsT0 = initialCarsBatches.SelectMany(modelGroup => modelGroup.Select(car => car)).ToList();
 
 
             // transmission from t0 to t1
 
-            var users = UserGenerator.Generate(10000);
+            //var users = UserGenerator.Generate(50000);
             //var additionalCarBatches = models.Select(m => m.CreateBatch(Settings.Random.Next(5, 20)));
             //var additionalCars = additionalCarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
 
-            var carsT1 = carsT0.ToList();
+            //var carsT1 = carsT0.ToList();
 
-            carsT1.ForEach(c =>
-            {
-                c.GenerateServiceData(c.DataZakupu,
-                    Settings.FirstDataCollection, 
-                    Settings.FirstDataCollection,
-                    Settings.Random.Next(4));
-            });
+            //carsT1.ForEach(c =>
+            //{
+            //    c.GenerateServiceData(c.DataZakupu,
+            //        Settings.FirstDataCollection, 
+            //        Settings.FirstDataCollection,
+            //        Settings.Random.Next(4));
+            //});
 
 
-            Console.WriteLine("Creating rents");
-            var rents = RentGenerator.GenerateForCarsAndUsers(carsT1, users, Settings.SystemStartDate,
-                Settings.FirstDataCollection, 10000).ToList();
+            //Console.WriteLine("Creating rents");
+            //var rents = RentGenerator.GenerateForCarsAndUsers(carsT1, users, Settings.SystemStartDate,
+                //Settings.FirstDataCollection, 10000).ToList();
 
+
+                var generator = new TimePeriodGenerator(20);
+                var result =  await generator.Generate(new DateTime(2019, 01, 01), DateTime.Today, TimeSpan.FromDays(1), TimeSpan.FromDays(7));
 
             Console.WriteLine("finished");
         }
