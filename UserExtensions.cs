@@ -1,4 +1,5 @@
 ﻿using DataGenerator.Model;
+using DataGenerator.Model.Sql;
 
 namespace DataGenerator
 {

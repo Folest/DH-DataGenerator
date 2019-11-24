@@ -1,4 +1,4 @@
-﻿namespace DataGenerator.Model
+﻿namespace DataGenerator.Model.Sql
 {
     public class Cennik
     {

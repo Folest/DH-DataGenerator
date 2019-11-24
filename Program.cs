@@ -8,21 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
-
-// {
-// Numer_rachunku:
-// VIN: 
-// Opis_czynnosci_naprawczych: 
-// [{Opis: 
-//     Cena: 
-//     GwarancjaWDniach: }],
-// Laczny_koszt: ,
-// Data_przyjecia: 
-// Data_realizacji:  
-// Nazwa_serwisu:  
-// }
-
+using DataGenerator.Model.Json;
+using DataGenerator.Model.Sql;
 
 namespace DataGenerator
 {
@@ -69,7 +56,7 @@ namespace DataGenerator
             //Settings.FirstDataCollection, 10000).ToList();
 
             var t1Rentals = await RentGenerator.Generate(t1Cars, t1Users, Settings.SystemStartDate,
-                Settings.FirstDataCollection, 20000);
+                Settings.FirstDataCollection, 50000);
 
 
             Console.WriteLine($"Rent T1 generation took {sw.Elapsed.Seconds} seconds");
@@ -105,7 +92,7 @@ namespace DataGenerator
             Console.WriteLine($"Rent T2 generation took {sw.Elapsed.Seconds} seconds");
 
             sw.Restart();
-            t1Cars.ForEach(c =>
+            t2Cars.Except(t1Cars).ToList().ForEach(c =>
             {
                 c.GenerateServiceData(t2Rentals,
                     Settings.FirstDataCollection,
@@ -115,7 +102,7 @@ namespace DataGenerator
             Console.WriteLine($"Service T2 data generation took {sw.Elapsed.Seconds} seconds");
 
 
-            SaveAsJson(t2Cars.Except(t1Cars).Select(c => c.Services).SelectMany(s => s).ToArray(), "t1");
+            SaveAsJson(t2Cars.Except(t1Cars).Select(c => c.Services).SelectMany(s => s).ToArray(), "t2");
             SaveAsScripts(t2Cars.Except(t1Cars), t2Users.Except(t1Users), null, t2Rentals, "t2");
 
 
@@ -156,7 +143,7 @@ namespace DataGenerator
 
         public static void SaveAsJson(IEnumerable<ServiceDataModel> services, string periodName = "t0")
         {
-            var jsons = services.Select(s => JsonConvert.SerializeObject(s) + ",");
+            var jsons = services.Select(s => JsonConvert.SerializeObject(s) + ",").ToArray();
 
             File.WriteAllLines(periodName + "Services.json", jsons);
         }

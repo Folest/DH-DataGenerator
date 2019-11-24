@@ -1,5 +1,6 @@
 ﻿using System;
 using DataGenerator.Model;
+using DataGenerator.Model.Json;
 
 namespace DataGenerator.Builder
 {

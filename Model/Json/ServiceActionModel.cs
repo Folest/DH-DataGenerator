@@ -1,4 +1,4 @@
-﻿namespace DataGenerator.Model
+﻿namespace DataGenerator.Model.Json
 {
     public class ServiceActionModel
     {

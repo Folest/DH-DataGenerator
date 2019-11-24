@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using DataGenerator.Model;
+using DataGenerator.Model.Sql;
 
 namespace DataGenerator.Extensions
 {
@@ -14,7 +15,7 @@ namespace DataGenerator.Extensions
             {
                 sb.Append(
                     $"({model.Id},'{model.Marka}', '{model.Nazwa}', {model.Generacja}, '{model.OznaczenieSilnika}'," +
-                    $" {model.Moc}, {model.SrednieSpalanie:F}, '{model.Naped}', '{model.TypSilnika}')\n");
+                    $" {model.Moc}, {model.SrednieSpalanie:F}, '{model.Naped}', '{model.TypSilnika}'),\n");
             }
             sb.Append(';');
 
@@ -23,13 +24,13 @@ namespace DataGenerator.Extensions
 
         public static string ToInsert(this IEnumerable<Samochod> cars)
         {
-            var sb = new StringBuilder(@"INSERT INTO Samochody(vin, model_id, data_zakupu, cena_zakupu, obszary_dzialalnosci_nazwa, dostepny, kolor, skrzynia_automatyczna) VALUES");
+            var sb = new StringBuilder(@"INSERT INTO Samochody(vin, model_id, data_zakupu, cena_zakupu, obszary_dzialalnosci_nazwa, dostepny, kolor, skrzynia_automatyczna, szerokosc_geo, wysokosc_geo) VALUES");
 
             foreach (var car in cars)
             {
                 sb.Append(
-                    $"('{car.Vin}', {car.ModelId}, '{car.DataZakupu:O}',{car.CenaZakupu}, '{car.ObszaryDzialalnosciNazwa}'," +
-                    $" {car.Dostepny}, '{car.Kolor}', {car.SkrzyniaAutomatyczna})\n");
+                    $"('{car.Vin}', {car.ModelId}, '{car.DataZakupu:d}',{car.CenaZakupu}, '{car.ObszaryDzialalnosciNazwa}'," +
+                    $" {car.Dostepny}, '{car.Kolor}', {car.SkrzyniaAutomatyczna}, {car.LokalizacjaSzerokosc:0.#####}, {car.LokalizacjaWysokosc:0.#####}),\n");
             }
 
             sb.Append(';');
@@ -44,7 +45,7 @@ namespace DataGenerator.Extensions
             {
                 sb.Append(
                     $"('{user.Pesel}', '{user.Imie}', '{user.Nazwisko}', '{(user.IsMale ? "m" : "k")}'," +
-                    $" '{user.DataUrodzenia:O}', '{user.DataRejestracji:O}')\n");
+                    $" '{user.DataUrodzenia:O}', '{user.DataRejestracji:O}'),\n");
             }
             sb.Append(';');
 
@@ -59,7 +60,7 @@ namespace DataGenerator.Extensions
             {
                 sb.Append(
                     $"('{rent.Id}', '{rent.Pesel}', {rent.CennikId}, '{rent.CzasRozpoczecia:O}', '{rent.CzasZakonczenia:O}', {rent.OcenaPrzejazdu:F}," +
-                    $" {rent.OdlegloscKm:F}, {rent.IloscZuzytegoPaliwa:F}, '{rent.CzasPostoju:c}', {rent.CenaZl}.{rent.CenaGr})\n");
+                    $" {rent.OdlegloscKm:F}, {rent.IloscZuzytegoPaliwa:F}, '{rent.CzasPostoju:c}', {rent.CenaZl}.{rent.CenaGr}),\n");
             }
             sb.Append(';');
 

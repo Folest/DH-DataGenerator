@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataGenerator.Model
+namespace DataGenerator.Model.Json
 {
     public class ServiceDataModel
     {

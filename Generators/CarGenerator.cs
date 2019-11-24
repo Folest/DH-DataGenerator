@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataGenerator.Model;
+using DataGenerator.Model.Sql;
 
 namespace DataGenerator.Generators
 {
@@ -31,9 +32,10 @@ namespace DataGenerator.Generators
                 Kolor = CarSettings.ColorPool.ElementAt(Settings.Random.Next(CarSettings.ColorPool.Count())),
                 Vin = Settings.RandomVin(),
                 Dostepny = true,
+                LokalizacjaWysokosc = 54 + (Settings.Random.NextDouble() * (0.422259 - 0.29882) + 0.29882),
+                LokalizacjaSzerokosc = 18 + (Settings.Random.NextDouble() * (0.650537 - 0.49105) + 0.49105),
                 ObszaryDzialalnosciNazwa = ObszarDzialalnosci.DefaultArea.Nazwa
             });
-            //todo: unmock obszary dzialalnosci i dostepnosc
 
             return cars;
         }

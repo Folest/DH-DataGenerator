@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataGenerator.Model
+namespace DataGenerator.Model.Sql
 {
     public class Wynajem
     {

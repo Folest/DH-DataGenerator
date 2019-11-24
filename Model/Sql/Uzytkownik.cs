@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataGenerator.Model
+namespace DataGenerator.Model.Sql
 {
     public class Uzytkownik : IEquatable<Uzytkownik>
     {
         public string Pesel { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
-        public bool IsMale { get; set; }
         public DateTime DataUrodzenia { get; set; }
         public DateTime DataRejestracji { get; set; }
         public int PrawoJazdyId { get; set; }
-
         public PrawoJazdy PrawoJazdy { get; set; }
+
+        public bool IsMale { get; set; }
         public IList<Wynajem> Rentals { get; set; } = new List<Wynajem>();
 
         public bool Equals(Uzytkownik other)

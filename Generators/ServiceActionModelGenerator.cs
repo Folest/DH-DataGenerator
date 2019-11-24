@@ -2,6 +2,7 @@
 using System.Linq;
 using DataGenerator.Builder;
 using DataGenerator.Model;
+using DataGenerator.Model.Json;
 
 namespace DataGenerator.Generators
 {
@@ -10,7 +11,7 @@ namespace DataGenerator.Generators
         internal static class ServiceActionModelSettings
         {
             public static Dictionary<string, (int, int)> DescriptionPriceRange { get; } =
-                new Dictionary<string, (int, int)> //todo: change ints to decimals
+                new Dictionary<string, (int, int)>
                 {
                     {"Wymiana uszczelki", (100, 600)},
                     {"Wymiana oleju", (200, 500)},

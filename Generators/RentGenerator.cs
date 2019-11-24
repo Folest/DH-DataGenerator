@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Uzytkownik = DataGenerator.Model.Uzytkownik;
+using DataGenerator.Model.Sql;
+using Uzytkownik = DataGenerator.Model.Sql.Uzytkownik;
 
 namespace DataGenerator.Generators
 {
@@ -109,98 +110,98 @@ namespace DataGenerator.Generators
             return rent;
         }
 
-    //    public static IList<Wynajem> GenerateForCarsAndUsers(IEnumerable<Samochod> cars,
-    //IEnumerable<Uzytkownik> users,
-    //DateTime minimalRentDate,
-    //DateTime maximalRentDate,
-    //int count)
-    //    {
-    //        var rentals = new List<Wynajem>();
-    //        while (rentals.Count != count)
-    //        {
-    //            var rentDate = Settings.RandomDateTimeBetween(minimalRentDate, maximalRentDate);
-    //            var rentEndDate = Settings.RandomDateTimeBetween(rentDate, rentDate + RentSettings.MaximalRentDuration);
+        public static IList<Wynajem> GenerateForCarsAndUsers(IEnumerable<Samochod> cars,
+    IEnumerable<Uzytkownik> users,
+    DateTime minimalRentDate,
+    DateTime maximalRentDate,
+    int count)
+        {
+            var rentals = new List<Wynajem>();
+            while (rentals.Count != count)
+            {
+                var rentDate = Settings.RandomDateTimeBetween(minimalRentDate, maximalRentDate);
+                var rentEndDate = Settings.RandomDateTimeBetween(rentDate, rentDate + RentSettings.MaximalRentDuration);
 
-    //            var availableUsers = GetAvailableUsers(users, rentals, rentDate, rentEndDate);
-    //            if (!availableUsers.Any())
-    //                continue;
-    //            //var randomUserIndex = Settings.Random.Next(availableUsers.Count());
-    //            var user = availableUsers.First();
-
-
-    //            var availableCars = GetAvailableCars(cars, rentals, rentDate, rentEndDate);
-    //            //var randomCarIndex = Settings.Random.Next(availableCars.Count());
-    //            if (!availableCars.Any())
-    //                continue;
+                var availableUsers = GetAvailableUsers(users, rentals, rentDate, rentEndDate);
+                if (!availableUsers.Any())
+                    continue;
+                //var randomUserIndex = Settings.Random.Next(availableUsers.Count());
+                var user = availableUsers.First();
 
 
-    //            var car = availableCars.First();
+                var availableCars = GetAvailableCars(cars, rentals, rentDate, rentEndDate);
+                //var randomCarIndex = Settings.Random.Next(availableCars.Count());
+                if (!availableCars.Any())
+                    continue;
 
 
-    //            minimalRentDate = new[] { minimalRentDate, user.DataRejestracji }.Min();
+                var car = availableCars.First();
 
-    //            var rent = new Wynajem();
 
-    //            rent.CzasRozpoczecia = rentDate;
-    //            rent.CzasZakonczenia = rentEndDate;
+                minimalRentDate = new[] { minimalRentDate, user.DataRejestracji }.Min();
 
-    //            rent.OdlegloscKm = (Settings.Random.NextDouble() *
-    //                               (RentSettings.MaxAverageSpeed - RentSettings.MinAverageSpeed)
-    //                               + RentSettings.MinAverageSpeed);
+                var rent = new Wynajem();
 
-    //            rent.IloscZuzytegoPaliwa = rent.OdlegloscKm * car.Model.SrednieSpalanie;
+                rent.CzasRozpoczecia = rentDate;
+                rent.CzasZakonczenia = rentEndDate;
 
-    //            var rentTime = rent.CzasZakonczenia.Subtract(rent.CzasRozpoczecia);
-    //            rent.CzasPostoju = new TimeSpan(
-    //                (long)(rentTime.Ticks * Settings.Random.NextDouble() * RentSettings.MaxStandbyDurationFraction));
+                rent.OdlegloscKm = (Settings.Random.NextDouble() *
+                                   (RentSettings.MaxAverageSpeed - RentSettings.MinAverageSpeed)
+                                   + RentSettings.MinAverageSpeed);
 
-    //            rent.Vin = car.Vin;
-    //            rent.Pesel = user.Pesel;
-    //            rent.Id = Guid.NewGuid();
+                rent.IloscZuzytegoPaliwa = rent.OdlegloscKm * car.Model.SrednieSpalanie;
 
-    //            rentals.Add(rent);
-    //            //Console.WriteLine($"Created rent: {rent.CzasRozpoczecia}, {rent.CzasZakonczenia}, {rent.Pesel}, {rent.Vin}");
-    //            if (rentals.Count % 100 == 0)
-    //                Console.WriteLine($"Just generated {rentals.Count} rentals");
-    //        }
+                var rentTime = rent.CzasZakonczenia.Subtract(rent.CzasRozpoczecia);
+                rent.CzasPostoju = new TimeSpan(
+                    (long)(rentTime.Ticks * Settings.Random.NextDouble() * RentSettings.MaxStandbyDurationFraction));
 
-    //        return rentals;
-    //    }
+                rent.Vin = car.Vin;
+                rent.Pesel = user.Pesel;
+                rent.Id = Guid.NewGuid();
 
-    //    private static IEnumerable<Samochod> GetAvailableCars(
-    //        IEnumerable<Samochod> cars,
-    //        IEnumerable<Wynajem> rentals,
-    //        DateTime rentStart,
-    //        DateTime rentEnd)
-    //    {
-    //        return cars
-    //            .Where(c => c.DataZakupu < rentStart)
-    //            .Where(c =>
-    //            {
-    //                var carRentals = rentals
-    //                    .Where(r => r.Vin == c.Vin);
+                rentals.Add(rent);
+                //Console.WriteLine($"Created rent: {rent.CzasRozpoczecia}, {rent.CzasZakonczenia}, {rent.Pesel}, {rent.Vin}");
+                if (rentals.Count % 100 == 0)
+                    Console.WriteLine($"Just generated {rentals.Count} rentals");
+            }
 
-    //                return !carRentals.Any(cr =>
-    //                    (cr.CzasRozpoczecia, cr.CzasZakonczenia).OverlapsWith((rentStart, rentEnd)));
-    //            })
-    //            .Where(c => !c.WasServicedDuringTimePeriod(rentStart, rentEnd));
-    //    }
+            return rentals;
+        }
 
-    //    private static IEnumerable<Uzytkownik> GetAvailableUsers(
-    //        IEnumerable<Uzytkownik> users,
-    //        IEnumerable<Wynajem> rentals,
-    //        DateTime rentStart,
-    //        DateTime rentEnd)
-    //    {
-    //        return users
-    //            .Where(u => u.DataRejestracji > rentStart)
-    //            .Where(u =>
-    //            {
-    //                var userRents = rentals.Where(r => r.Pesel == u.Pesel);
-    //                return !userRents.Any(ur =>
-    //                    (ur.CzasRozpoczecia, ur.CzasZakonczenia).OverlapsWith((rentStart, rentEnd)));
-    //            });
-    //    }
+        private static IEnumerable<Samochod> GetAvailableCars(
+            IEnumerable<Samochod> cars,
+            IEnumerable<Wynajem> rentals,
+            DateTime rentStart,
+            DateTime rentEnd)
+        {
+            return cars
+                .Where(c => c.DataZakupu < rentStart)
+                .Where(c =>
+                {
+                    var carRentals = rentals
+                        .Where(r => r.Vin == c.Vin);
+
+                    return !carRentals.Any(cr =>
+                        (cr.CzasRozpoczecia, cr.CzasZakonczenia).OverlapsWith((rentStart, rentEnd)));
+                })
+                .Where(c => !c.WasServicedDuringTimePeriod(rentStart, rentEnd));
+        }
+
+        private static IEnumerable<Uzytkownik> GetAvailableUsers(
+            IEnumerable<Uzytkownik> users,
+            IEnumerable<Wynajem> rentals,
+            DateTime rentStart,
+            DateTime rentEnd)
+        {
+            return users
+                .Where(u => u.DataRejestracji > rentStart)
+                .Where(u =>
+                {
+                    var userRents = rentals.Where(r => r.Pesel == u.Pesel);
+                    return !userRents.Any(ur =>
+                        (ur.CzasRozpoczecia, ur.CzasZakonczenia).OverlapsWith((rentStart, rentEnd)));
+                });
+        }
     }
 
     public static class DatePeriodsExtensions

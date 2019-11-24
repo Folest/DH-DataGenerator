@@ -15,6 +15,10 @@ namespace DataGenerator.Model
         public bool SkrzyniaAutomatyczna { get; set; }
         public string Kolor { get; set; }
 
+        public string Typ { get; set; }
+        public double LokalizacjaSzerokosc { get; set; }
+        public double LokalizacjaWysokosc { get; set; }
+
         public ModelSamochodu Model { get; set; }
         public IList<ServiceDataModel> Services = new List<ServiceDataModel>();
 

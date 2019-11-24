@@ -3,6 +3,8 @@ using DataGenerator.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataGenerator.Model.Json;
+using DataGenerator.Model.Sql;
 
 namespace DataGenerator.Generators
 {
