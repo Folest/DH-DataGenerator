@@ -19,7 +19,7 @@ namespace DataGenerator
         public const int ModelCount = 10;
         public const int RentRateCount = 10;
 
-        public static (int min, int max) CarBatchSizeRange = (25, 100);
+        public static (int min, int max) CarBatchSizeRange = (5, 10);
 
         public const int MaxServicesInAPeriod = 4;
     }
@@ -31,6 +31,8 @@ namespace DataGenerator
             {
                 File.Delete(WorldSettings.FileName);
             }
+
+
 
             //moment t0
             var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount)
@@ -46,7 +48,10 @@ namespace DataGenerator
             var t0RentRates = RentRateGenerator.Generate(WorldSettings.RentRateCount).ToList();
 
             // save to files
-            SaveAsScripts(t0Cars, null, t0Models, null, t0RentRates);
+            SaveAsScripts(t0Cars, null, t0Models, null, t0RentRates, OperationAreaStub.AreasOfOperation);
+
+
+
 
 
             //transmission from t0 to t1
@@ -54,7 +59,9 @@ namespace DataGenerator
             var t1AdditionalCars = t1CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
 
             var t1Cars = t0Cars.Concat(t1AdditionalCars).ToList();
+
             var t1Users = UserGenerator.Generate(50).Distinct().ToList();
+            var t1Licenses = t1Users.Select(u => u.GenerateForUser());
 
             Console.WriteLine("Creating rents");
             var sw = Stopwatch.StartNew();
@@ -62,10 +69,6 @@ namespace DataGenerator
             var t1Rentals = await RentGenerator.Generate(t1Cars, t1Users, t0RentRates, Settings.SystemStartDate,
                 Settings.FirstDataCollection, 1000);
 
-
-            Console.WriteLine($"Rent T1 generation took {sw.Elapsed.Seconds} seconds");
-
-            sw.Restart();
             t1Cars.ForEach(c =>
             {
                 c.GenerateServiceData(t1Rentals,
@@ -73,11 +76,14 @@ namespace DataGenerator
                     Settings.FirstDataCollection,
                     Settings.FirstDataCollection);
             });
-            Console.WriteLine($"Service T1 data generation took {sw.Elapsed.Seconds} seconds");
 
             // saving to files
             SaveAsJson(t1Cars.Except(t0Cars).Select(c => c.Services).SelectMany(s => s).ToArray(), "t1");
-            SaveAsScripts(t1Cars.Except(t0Cars), t1Users, null, t1Rentals, null,"t1");
+            SaveAsScripts(t1Cars.Except(t0Cars), t1Users, null, t1Rentals, null, null, t1Licenses, "t1");
+
+
+
+
 
 
             // transmission from t0 to t1
@@ -119,11 +125,20 @@ namespace DataGenerator
             IEnumerable<ModelSamochodu> models = null,
             IEnumerable<Wynajem> rentals = null,
             IEnumerable<Cennik> rates = null,
+            IEnumerable<ObszarDzialalnosci> areas = null,
+            IEnumerable<PrawoJazdy> licenses = null,
             string periodName = "t0")
         {
             var filename = WorldSettings.FileName;
-                
+
             File.AppendAllText(filename, $"\n\n--------------{periodName} INSERTS--------------\n\n");
+
+            if (areas != null)
+            {
+                File.AppendAllText(filename, $"\n\n-------{periodName} INSERTS for AREAS-------\n");
+                var script = areas.ToInsert();
+                File.AppendAllText(filename, script);
+            }
 
             if (rates != null)
             {
@@ -146,6 +161,13 @@ namespace DataGenerator
                 File.AppendAllText(filename, script);
             }
 
+            if (licenses != null)
+            {
+                File.AppendAllText(filename, $"\n\n-------{periodName} INSERTS for LICENSES-------\n");
+                var script = licenses.ToInsert();
+                File.AppendAllText(filename, script);
+            }
+
             if (cars != null)
             {
                 File.AppendAllText(filename, $"\n\n-------{periodName} INSERTS for CARS-------\n");
@@ -157,7 +179,7 @@ namespace DataGenerator
             {
                 File.AppendAllText(filename, $"\n\n-------{periodName} INSERTS for RENTALS-------\n");
                 var script = rentals.ToInsert();
-                File.AppendAllText(filename , script);
+                File.AppendAllText(filename, script);
             }
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using DataGenerator.Model.Sql;
@@ -17,7 +18,7 @@ namespace DataGenerator.Generators
             public static TimeSpan MinimalRentDuration = TimeSpan.FromMinutes(5);
             public const double MinAverageSpeed = 20;
             public const double MaxAverageSpeed = 100;
-            public const double MaxStandbyDurationFraction = 0.2;
+            public const double MaxParkingDurationFraction = 0.2;
         }
 
         public static async Task<IEnumerable<Wynajem>> Generate(
@@ -102,8 +103,8 @@ namespace DataGenerator.Generators
 
             var rentTime = rent.CzasZakonczenia.Subtract(rent.CzasRozpoczecia);
 
-            rent.CzasPostoju = new TimeSpan(
-                (long)(rentTime.Ticks * Settings.Random.NextDouble() * RentSettings.MaxStandbyDurationFraction));
+            var parkingFraction = Settings.Random.NextDouble() * RentSettings.MaxParkingDurationFraction;
+            rent.CzasPostojuMin = (int)(rentTime.TotalMinutes * parkingFraction);
 
             rent.Cennik = cenniki.ElementAt(Settings.Random.Next(cenniki.Count()));
             rent.Vin = car.Vin;

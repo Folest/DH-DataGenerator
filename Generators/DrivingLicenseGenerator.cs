@@ -11,15 +11,15 @@ namespace DataGenerator.Generators
             public const int MinimalDrivingAge = 18;
         }
 
-        private static int Id { get; set; }
+        private static long Id { get; set; }
 
-        public static PrawoJazdy GenerateForUser(Uzytkownik user, DateTime maximalIssuingDate)
+        public static PrawoJazdy GenerateForUser(this Uzytkownik user)
         {
             var minimalIssuingDate = user.DataUrodzenia.AddYears(DrivingLicenseSettings.MinimalDrivingAge);
 
             return new PrawoJazdy
             {
-                DataWydania = Settings.RandomDateBetween(minimalIssuingDate, maximalIssuingDate),
+                DataWydania = Settings.RandomDateBetween(minimalIssuingDate, user.DataRejestracji),
                 Id = Id++,
                 Pesel = user.Pesel
             };

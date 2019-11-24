@@ -10,13 +10,24 @@ namespace DataGenerator.Generators
     {
         public static class CarModelSettings
         {
-            public static Dictionary<string, IEnumerable<string>> ProducersModels =
-                new Dictionary<string, IEnumerable<string>>
+            private static class CarTypes
+            {
+                public const string Sedan = "Sedan";
+                public const string SedanPremium = "Sedan Premium";
+                public const string Hatchback = "Hatchback";
+                public const string HatchbackPremium = "Hatchback premium";
+                public const string HatchbackMini = "Mini hatchback";
+                public const string SUVMini = "Mini SUV";
+                public const string SUV = "SUV";
+            }
+
+            public static Dictionary<string, IEnumerable<(string model, string typ)>> ProducersModels =
+                new Dictionary<string, IEnumerable<(string, string)>>
                 {
-                    {"Skoda", new[] {"Octavia", "Fabia", "Superb"}},
-                    {"Toyota", new[] {"CR-V", "Corolla", "Auris"}},
-                    {"Renault", new[] {"Clio", "Zoe"}},
-                    {"Opel", new[] {"Astra", "Corsa", "Ampera"}}
+                    {"Skoda", new[] {("Octavia", CarTypes.Sedan), ("Fabia", CarTypes.HatchbackMini), ("Superb", CarTypes.SedanPremium) }},
+                    {"Toyota", new[] {("CR-V", CarTypes.SUVMini), ("Corolla", CarTypes.HatchbackMini), ("Auris", CarTypes.Hatchback), ("Auris", CarTypes.Sedan) }},
+                    {"Renault", new[] {("Clio", CarTypes.Hatchback), ("Zoe", CarTypes.HatchbackMini)}},
+                    {"Opel", new[] {("Astra", CarTypes.HatchbackPremium), ("Astra", CarTypes.Sedan), ("Corsa",CarTypes.Hatchback), ("Ampera", CarTypes.Hatchback)}}
                 };
 
             public static IEnumerable<string> DrivePool = new[] { "przedni", "4x4", "tylny" };
@@ -76,7 +87,10 @@ namespace DataGenerator.Generators
             model.Marka = producers.ElementAt(Settings.Random.Next(producers.Count));
 
             var producerModels = CarModelSettings.ProducersModels[model.Marka];
-            model.Nazwa = producerModels.ElementAt(Settings.Random.Next(producerModels.Count()));
+
+            var modelTyp = producerModels.ElementAt(Settings.Random.Next(producerModels.Count()));
+            model.Nazwa = modelTyp.model;
+            model.Typ = modelTyp.typ;
 
             model.Naped =
                 CarModelSettings.DrivePool.ElementAt(Settings.Random.Next(CarModelSettings.DrivePool.Count()));

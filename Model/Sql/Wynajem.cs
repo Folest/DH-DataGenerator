@@ -20,7 +20,7 @@ namespace DataGenerator.Model.Sql
         public float OcenaPrzejazdu { get; set; }
         public double OdlegloscKm { get; set; }
         public double IloscZuzytegoPaliwa { get; set; }
-        public TimeSpan CzasPostoju { get; set; }
+        public int CzasPostojuMin { get; set; }
 
         public Cennik Cennik { get; set; }
     }

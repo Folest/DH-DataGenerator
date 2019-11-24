@@ -34,7 +34,7 @@ namespace DataGenerator.Generators
                 Dostepny = true,
                 LokalizacjaWysokosc = 54 + (Settings.Random.NextDouble() * (0.422259 - 0.29882) + 0.29882),
                 LokalizacjaSzerokosc = 18 + (Settings.Random.NextDouble() * (0.650537 - 0.49105) + 0.49105),
-                ObszaryDzialalnosciNazwa = ObszarDzialalnosci.DefaultArea.Nazwa
+                ObszaryDzialalnosciNazwa = OperationAreaStub.AreasOfOperation[Settings.Random.Next(OperationAreaStub.AreasOfOperation.Count)].Nazwa
             });
 
             return cars;
