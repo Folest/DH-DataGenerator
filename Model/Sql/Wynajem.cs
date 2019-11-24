@@ -4,17 +4,24 @@ namespace DataGenerator.Model.Sql
 {
     public class Wynajem
     {
-        public Guid Id { get; set; }
+        public static long CurrentId { get; private set; } = 1;
+
+        public Wynajem()
+        {
+            Id = CurrentId++;
+        }
+
+        public long Id { get; }
         public string Pesel { get; set; }
         public string Vin { get; set; }
-        public int CennikId { get; set; }
+        public long CennikId => Cennik?.Id ?? -1;
         public DateTime CzasRozpoczecia { get; set; }
         public DateTime CzasZakonczenia { get; set; }
         public float OcenaPrzejazdu { get; set; }
         public double OdlegloscKm { get; set; }
         public double IloscZuzytegoPaliwa { get; set; }
         public TimeSpan CzasPostoju { get; set; }
-        public int CenaZl { get; set; }
-        public int CenaGr { get; set; }
+
+        public Cennik Cennik { get; set; }
     }
 }

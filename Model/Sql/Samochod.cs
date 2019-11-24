@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using DataGenerator.Model.Json;
+using DataGenerator.Model.Sql;
 
 namespace DataGenerator.Model
 {
@@ -15,11 +18,12 @@ namespace DataGenerator.Model
         public bool SkrzyniaAutomatyczna { get; set; }
         public string Kolor { get; set; }
 
-        public string Typ { get; set; }
         public double LokalizacjaSzerokosc { get; set; }
         public double LokalizacjaWysokosc { get; set; }
 
+        [IgnoreDataMember]
         public ModelSamochodu Model { get; set; }
+        [IgnoreDataMember]
         public IList<ServiceDataModel> Services = new List<ServiceDataModel>();
 
         public bool Equals(Samochod other)

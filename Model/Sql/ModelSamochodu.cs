@@ -1,4 +1,6 @@
-﻿namespace DataGenerator.Model
+﻿using System.Runtime.Serialization;
+
+namespace DataGenerator.Model.Sql
 {
     public class ModelSamochodu
     {
@@ -11,7 +13,9 @@
         public double SrednieSpalanie { get; set; }
         public string Naped { get; set; }
         public string TypSilnika { get; set; }
+        public string Typ { get; set; }
 
+        [IgnoreDataMember]
         public (int, int) PriceRange { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace DataGenerator.Generators
         {
             _count = maxCount;
         }
-
+        // This generates 
         public async Task<IEnumerable<(DateTime start, DateTime stop)>> Generate(DateTime start,
                                                                                  DateTime stop,
                                                                                  TimeSpan minDuration,

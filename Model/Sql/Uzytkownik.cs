@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace DataGenerator.Model.Sql
 {
@@ -11,10 +12,13 @@ namespace DataGenerator.Model.Sql
         public DateTime DataUrodzenia { get; set; }
         public DateTime DataRejestracji { get; set; }
         public int PrawoJazdyId { get; set; }
-        public PrawoJazdy PrawoJazdy { get; set; }
 
+        [IgnoreDataMember]
         public bool IsMale { get; set; }
+        [IgnoreDataMember]
         public IList<Wynajem> Rentals { get; set; } = new List<Wynajem>();
+        [IgnoreDataMember]
+        public PrawoJazdy PrawoJazdy { get; set; }
 
         public bool Equals(Uzytkownik other)
         {
