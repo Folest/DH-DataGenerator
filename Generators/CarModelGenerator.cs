@@ -10,6 +10,8 @@ namespace DataGenerator.Generators
     {
         public static class CarModelSettings
         {
+            public const int MinModelProductionStartYear = 2013;
+            
             private static class CarTypes
             {
                 public const string Sedan = "Sedan";
@@ -77,7 +79,7 @@ namespace DataGenerator.Generators
 
         private static int Count = 0;
 
-        public static ModelSamochodu Generate()
+        public static ModelSamochodu Generate(int maxModelProductionStartYear)
         {
             var model = new ModelSamochodu();
 
@@ -114,7 +116,7 @@ namespace DataGenerator.Generators
 
             model.SrednieSpalanie = consumption;
 
-            model.Generacja = Settings.Random.Next(1, 8);
+            model.RokRozpoczeciaProdukcji = Settings.Random.Next(CarModelSettings.MinModelProductionStartYear, maxModelProductionStartYear + 1);
 
             var minPrice = Settings.Random.Next(CarModelSettings.MinimalPrice, CarModelSettings.MaximalPrice);
             model.PriceRange = (minPrice, minPrice + (minPrice * CarModelSettings.PriceVariationPercent / 100));
@@ -122,9 +124,9 @@ namespace DataGenerator.Generators
             return model;
         }
 
-        public static IEnumerable<ModelSamochodu> Generate(int count)
+        public static IEnumerable<ModelSamochodu> Generate(int count, int maxModelProductionStartYear)
         {
-            return Enumerable.Range(0, count).Select(_ => Generate());
+            return Enumerable.Range(0, count).Select(_ => Generate(maxModelProductionStartYear));
         }
     }
 }

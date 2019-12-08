@@ -14,7 +14,7 @@ namespace DataGenerator.Extensions
             foreach (var model in models)
             {
                 sb.Append(
-                    $"({model.Id},'{model.Marka}', '{model.Nazwa}', {model.Generacja}, '{model.OznaczenieSilnika}'," +
+                    $"({model.Id},'{model.Marka}', '{model.Nazwa}', {model.RokRozpoczeciaProdukcji}, '{model.OznaczenieSilnika}'," +
                     $" {model.Moc}, {model.SrednieSpalanie:F}, '{model.Naped}', '{model.TypSilnika}', '{model.Typ}'),\n");
             }
             sb.Remove(sb.Length - 2, 2);

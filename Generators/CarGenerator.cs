@@ -10,15 +10,16 @@ namespace DataGenerator.Generators
     {
         internal static class CarSettings
         {
-            public static IEnumerable<string> ColorPool = new[] {"Czerwony", "Niebieski", "Szary", "Czarny", "Srebrny"};
+            public static IEnumerable<string> ColorPool = new[] { "Czerwony", "Niebieski", "Szary", "Czarny", "Srebrny" };
         }
 
         public static (DateTime oldest, DateTime newest) PurchaseDateRange =
-            (Settings.SystemStartDate, Settings.FirstDataCollection); 
+            (Settings.SystemStartDate, Settings.FirstDataCollection);
 
         public static IEnumerable<Samochod> CreateBatch(this ModelSamochodu model, int count)
         {
-            var purchaseDate = Settings.RandomDateBetween(PurchaseDateRange.oldest, PurchaseDateRange.newest);
+            var minPurchaseDate = new[] { PurchaseDateRange.oldest, new DateTime(model.RokRozpoczeciaProdukcji - 1, 1, 1) }.Max();
+            var purchaseDate = Settings.RandomDateBetween(minPurchaseDate, PurchaseDateRange.newest);
             var purchasePrice = Settings.Random.Next(model.PriceRange.Item1, model.PriceRange.Item2);
             var automaticTransmission = Settings.Random.Next(3) % 2 == 0;
 

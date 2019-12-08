@@ -26,6 +26,18 @@ namespace DataGenerator.Generators
                 PunktCentralny = (52.411569, 16.930175),
                 Srednica = 10
             },
+            new ObszarDzialalnosci
+            {
+                Nazwa = "Wrocław",
+                PunktCentralny = (51.110512, 17.033418),
+                Srednica = 10
+            },
+            new ObszarDzialalnosci
+            {
+                Nazwa = "Częstochowa",
+                PunktCentralny = (50.808762, 19.117230),
+                Srednica = 10
+            }
         };
     }
 }

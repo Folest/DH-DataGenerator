@@ -41,9 +41,9 @@ namespace DataGenerator
 
         public static DateTime RandomDateBetween(DateTime oldest, DateTime newest)
         {
-            if (oldest > newest)
+            if (oldest >= newest)
             {
-                throw new Exception("Wrong argument order");
+                throw new Exception("Oldest should be older than newest");
             }
 
             var maxDays = newest.Subtract(oldest).Days;

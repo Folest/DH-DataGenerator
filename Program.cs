@@ -35,7 +35,7 @@ namespace DataGenerator
 
 
             //moment t0
-            var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount)
+            var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount, Settings.FirstDataCollection.Year)
                 .ToList();
 
             var t0CarBatches = t0Models
@@ -49,9 +49,6 @@ namespace DataGenerator
 
             // save to files
             SaveAsScripts(t0Cars, null, t0Models, null, t0RentRates, OperationAreaStub.AreasOfOperation);
-
-
-
 
 
             //transmission from t0 to t1
@@ -131,7 +128,7 @@ namespace DataGenerator
         {
             var filename = WorldSettings.FileName;
 
-            File.AppendAllText(filename, $"\n\n--------------{periodName} INSERTS--------------\n\n");
+            File.AppendAllText(filename, $"--------------{periodName} INSERTS--------------\n\n");
 
             if (areas != null)
             {

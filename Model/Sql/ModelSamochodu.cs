@@ -7,7 +7,7 @@ namespace DataGenerator.Model.Sql
         public int Id { get; set; }
         public string Marka { get; set; }
         public string Nazwa { get; set; }
-        public int Generacja { get; set; }
+        public int RokRozpoczeciaProdukcji { get; set; }
         public string OznaczenieSilnika { get; set; }
         public int Moc { get; set; }
         public double SrednieSpalanie { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataGenerator.Model;
 using DataGenerator.Model.Sql;
 
 namespace DataGenerator.Generators
@@ -10,8 +9,8 @@ namespace DataGenerator.Generators
     {
         public static class UserSettings
         {
-            public static DateTime OldestBirthDate = Settings.FirstDataCollection.AddYears(-80);
-            public static DateTime EarliestBirthDate = Settings.FirstDataCollection.AddYears(-19);
+            public static int MaxAge = 80;
+            public static int MinAge = 19;
 
             public static IEnumerable<string> NamePool = new[]
             {
@@ -34,11 +33,11 @@ namespace DataGenerator.Generators
         {
             var user = new Uzytkownik
             {
-                DataUrodzenia = Settings.RandomDateBetween(UserSettings.OldestBirthDate,
-                    UserSettings.EarliestBirthDate),
                 DataRejestracji = Settings.RandomDateBetween(RegistrationDate.oldest, RegistrationDate.newest)
             };
 
+            user.DataUrodzenia = Settings.RandomDateBetween(user.DataRejestracji.AddYears(-UserSettings.MaxAge),
+                user.DataRejestracji.AddYears(-UserSettings.MinAge));
 
             var surnamePool = UserSettings.SurnamePool;
             user.Nazwisko = surnamePool.ElementAtOrDefault(Settings.Random.Next(surnamePool.Count()));
