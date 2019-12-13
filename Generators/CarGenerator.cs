@@ -18,10 +18,12 @@ namespace DataGenerator.Generators
 
         public static IEnumerable<Samochod> CreateBatch(this ModelSamochodu model, int count)
         {
-            var minPurchaseDate = new[] { PurchaseDateRange.oldest, new DateTime(model.RokRozpoczeciaProdukcji - 1, 1, 1) }.Max();
+            var minPurchaseDate = new[] { PurchaseDateRange.oldest, new DateTime(model.RokRozpoczeciaProdukcji, 1, 1) }.Max();
             var purchaseDate = Settings.RandomDateBetween(minPurchaseDate, PurchaseDateRange.newest);
             var purchasePrice = Settings.Random.Next(model.PriceRange.Item1, model.PriceRange.Item2);
             var automaticTransmission = Settings.Random.Next(3) % 2 == 0;
+
+            var productionDate = purchaseDate;
 
             var cars = Enumerable.Range(0, count).Select(_ => new Samochod
             {
@@ -35,7 +37,8 @@ namespace DataGenerator.Generators
                 Dostepny = true,
                 LokalizacjaWysokosc = 54 + (Settings.Random.NextDouble() * (0.422259 - 0.29882) + 0.29882),
                 LokalizacjaSzerokosc = 18 + (Settings.Random.NextDouble() * (0.650537 - 0.49105) + 0.49105),
-                ObszaryDzialalnosciNazwa = OperationAreaStub.AreasOfOperation[Settings.Random.Next(OperationAreaStub.AreasOfOperation.Count)].Nazwa
+                ObszaryDzialalnosciNazwa = OperationAreaStub.AreasOfOperation[Settings.Random.Next(OperationAreaStub.AreasOfOperation.Count)].Nazwa,
+                DataProdukcji = productionDate
             });
 
             return cars;

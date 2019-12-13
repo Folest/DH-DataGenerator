@@ -25,14 +25,14 @@ namespace DataGenerator.Extensions
 
         public static string ToInsert(this IEnumerable<Samochod> cars)
         {
-            var sb = new StringBuilder("INSERT INTO Samochody(vin, FK_Modele_id, data_zakupu, cena_zakupu, FK_Obszary_dzialalnosci_nazwa, dostepny, kolor, skrzynia_automatyczna, lokalizacja_szerokosc, lokalizacja_dlugosc) \nVALUES");
+            var sb = new StringBuilder("INSERT INTO Samochody(vin, FK_Modele_id, data_zakupu, cena_zakupu, FK_Obszary_dzialalnosci_nazwa, dostepny, kolor, skrzynia_automatyczna, lokalizacja_szerokosc, lokalizacja_dlugosc, data_produkcji) \nVALUES");
 
             foreach (var car in cars)
             {
                 sb.Append(
                     $"('{car.Vin}', {car.ModelId}, '{car.DataZakupu:O}',{car.CenaZakupu}, '{car.ObszaryDzialalnosciNazwa}'," +
                     $" {(car.Dostepny ? 1 : 0)}, '{car.Kolor}'," +
-                    $" {(car.SkrzyniaAutomatyczna ? 1 : 0)}, {car.LokalizacjaSzerokosc:0.#####}, {car.LokalizacjaWysokosc:0.#####}),\n");
+                    $" {(car.SkrzyniaAutomatyczna ? 1 : 0)}, {car.LokalizacjaSzerokosc:0.#####}, {car.LokalizacjaWysokosc:0.#####}, '{car.DataProdukcji:O}'),\n");
             }
             sb.Remove(sb.Length - 2, 2);
 

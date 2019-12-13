@@ -35,7 +35,7 @@ namespace DataGenerator
 
 
             //moment t0
-            var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount, Settings.FirstDataCollection.Year)
+            var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount, Settings.FirstDataCollection.Year - 3)
                 .ToList();
 
             var t0CarBatches = t0Models

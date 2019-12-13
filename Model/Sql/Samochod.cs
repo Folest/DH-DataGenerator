@@ -17,6 +17,7 @@ namespace DataGenerator.Model
         public bool Dostepny { get; set; }
         public bool SkrzyniaAutomatyczna { get; set; }
         public string Kolor { get; set; }
+        public DateTime DataProdukcji { get; set; }
 
         public double LokalizacjaSzerokosc { get; set; }
         public double LokalizacjaWysokosc { get; set; }

@@ -10,7 +10,7 @@ namespace DataGenerator.Generators
     {
         public static class CarModelSettings
         {
-            public const int MinModelProductionStartYear = 2013;
+            public const int MinModelProductionStartYear = 2010;
             
             private static class CarTypes
             {
