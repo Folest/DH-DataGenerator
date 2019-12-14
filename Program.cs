@@ -182,9 +182,10 @@ namespace DataGenerator
 
         public static void SaveAsJson(IEnumerable<ServiceDataModel> services, string periodName = "t0")
         {
-            var jsons = services.Select(s => JsonConvert.SerializeObject(s) + ",").ToArray();
-
-            File.WriteAllLines(periodName + "Services.json", jsons);
+            List<string> jsons = services.Select(s => JsonConvert.SerializeObject(s) + ",").ToList();
+            
+            jsons[jsons.Count - 1] = jsons.Last().Remove(jsons.Last().Length - 1);
+            File.WriteAllLines(periodName + "Services.json", jsons.Prepend("[").Append("]"));
         }
     }
 
