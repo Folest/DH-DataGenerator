@@ -78,7 +78,7 @@ namespace DataGenerator.Generators
                 .WithReturnDate(period.Item2)
                 .WithServiceName(namePool.ElementAt(Settings.Random.Next(namePool.Count())))
                 .WithInvoiceNumber(Settings.RandomString(10, Settings.Numbers))
-                .WithVin(Settings.RandomVin())
+                .WithVin(car.Vin)
                 .WithServiceActions(ServiceActionModelGenerator.Generate(Settings.Random.Next(ServiceDataModelSettings.MaxActions)+ 1))
                 .CalculateCostAndBuildModel());
 
