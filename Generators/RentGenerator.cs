@@ -66,8 +66,8 @@ namespace DataGenerator.Generators
                     {
                         var rentals = kv.Key.Rentals.Select(
                             r => (r.CzasRozpoczecia, r.CzasZakonczenia));
-                        return !rentals.Any(r => r.OverlapsWith((start, end)))
-                                        && kv.Key.DataRejestracji > start;
+                        return kv.Key.DataRejestracji < start 
+                        && !rentals.Any(r => r.OverlapsWith((start, end)));
                     }).Key; // which do not rent any cars in time of this 
 
                     if (user == default)

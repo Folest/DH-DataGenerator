@@ -9,7 +9,7 @@ namespace DataGenerator.Extensions
     {
         public static string ToInsert(this IEnumerable<ModelSamochodu> models)
         {
-            var sb = new StringBuilder("INSERT INTO ModeleSamochodow(id, marka, nazwa, generacja, oznaczenie_silnika, moc, srednie_spalanie, naped, typ_silnika, typ)\nVALUES");
+            var sb = new StringBuilder("INSERT INTO ModeleSamochodow(id, marka, nazwa, rok_rozpoczecia_produkcji, oznaczenie_silnika, moc, srednie_spalanie, naped, typ_silnika, typ)\nVALUES");
 
             foreach (var model in models)
             {

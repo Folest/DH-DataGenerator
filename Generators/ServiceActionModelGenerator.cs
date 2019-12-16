@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DataGenerator.Builder;
-using DataGenerator.Model;
 using DataGenerator.Model.Json;
 
 namespace DataGenerator.Generators

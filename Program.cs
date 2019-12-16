@@ -16,12 +16,12 @@ namespace DataGenerator
     public static class WorldSettings
     {
         public const string FileName = "Generator.sql";
-        public const int ModelCount = 10;
-        public const int RentRateCount = 10;
+        public const int ModelCount = 30;
+        public const int RentRateCount = 20;
 
-        public static (int min, int max) CarBatchSizeRange = (5, 10);
+        public static (int min, int max) CarBatchSizeRange = (25, 50);
 
-        public const int MaxServicesInAPeriod = 4;
+        public const int MaxServicesInAPeriod = 2;
     }
     class Program
     {
@@ -31,8 +31,6 @@ namespace DataGenerator
             {
                 File.Delete(WorldSettings.FileName);
             }
-
-
 
             //moment t0
             var t0Models = CarModelGenerator.Generate(WorldSettings.ModelCount, Settings.FirstDataCollection.Year - 3)
@@ -52,19 +50,19 @@ namespace DataGenerator
 
 
             //transmission from t0 to t1
-            var t1CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(2, 10)));
+            var t1CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(WorldSettings.CarBatchSizeRange.min, WorldSettings.CarBatchSizeRange.max)));
             var t1AdditionalCars = t1CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
 
             var t1Cars = t0Cars.Concat(t1AdditionalCars).ToList();
 
-            var t1Users = UserGenerator.Generate(50).Distinct().ToList();
+            var t1Users = UserGenerator.Generate(2000).Distinct().ToList();
+
             var t1Licenses = t1Users.Select(u => u.GenerateForUser());
 
             Console.WriteLine("Creating rents");
             var sw = Stopwatch.StartNew();
 
-            var t1Rentals = await RentGenerator.Generate(t1Cars, t1Users, t0RentRates, Settings.SystemStartDate,
-                Settings.FirstDataCollection, 1000);
+            var t1Rentals = await RentGenerator.Generate(t1Cars, t1Users, t0RentRates, Settings.SystemStartDate, Settings.FirstDataCollection, 20000);
 
             t1Cars.ForEach(c =>
             {
@@ -75,42 +73,41 @@ namespace DataGenerator
             });
 
             // saving to files
-            SaveAsJson(t1Cars.Except(t0Cars).Select(c => c.Services).SelectMany(s => s).ToArray(), "t1");
-            SaveAsScripts(t1Cars.Except(t0Cars), t1Users, null, t1Rentals, null, null, t1Licenses, "t1");
+            SaveAsJson(t1Cars.Select(c => c.Services).SelectMany(s => s).ToArray(), "t1");
+            SaveAsScripts(t1AdditionalCars, t1Users, null, t1Rentals, null, null, t1Licenses, "t1");
 
-
-
-
-
+            // delete all the service action infromation about t1 cars
+            t1Cars.ForEach(c => c.Services = new List<ServiceDataModel>());
 
             // transmission from t0 to t1
-            //var t2CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(2, 10)));
+            var t2CarBatches = t0Models.Select(m => m.CreateBatch(Settings.Random.Next(WorldSettings.CarBatchSizeRange.min, WorldSettings.CarBatchSizeRange.max)));
 
-            //var t2AdditionalCars = t2CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
-            //var t2AdditionalUsers = UserGenerator.Generate(50).Distinct().ToArray();
+            var t2AdditionalCars = t2CarBatches.SelectMany(modelGroup => modelGroup.Select(c => c));
+            var t2AdditionalUsers = UserGenerator.Generate(2000).Distinct().ToArray();
 
-            //var t2Cars = t1Cars.Concat(t2AdditionalCars).ToArray();
-            //var t2Users = t1Users.Concat(t2AdditionalUsers).Distinct().ToArray();
+            var t2Cars = t1Cars.Concat(t2AdditionalCars).ToArray();
+            var t2Users = t1Users.Concat(t2AdditionalUsers).Distinct().ToArray();
 
-            //sw.Restart();
-            //var t2Rentals = await RentGenerator.Generate(t2Cars, t2Users, t0RentRates, Settings.FirstDataCollection,
-            //    Settings.SecondDataCollection, 100);
+            sw.Restart();
 
-            //Console.WriteLine($"Rent T2 generation took {sw.Elapsed.Seconds} seconds");
+            var t2Rentals = await RentGenerator.Generate(t2Cars, t2Users, t0RentRates, Settings.FirstDataCollection,
+                Settings.SecondDataCollection, 30000);
 
-            //sw.Restart();
-            //t2Cars.Except(t1Cars).ToList().ForEach(c =>
-            //{
-            //    c.GenerateServiceData(t2Rentals,
-            //        Settings.FirstDataCollection,
-            //        Settings.SecondDataCollection,
-            //        Settings.SecondDataCollection);
-            //});
-            //Console.WriteLine($"Service T2 data generation took {sw.Elapsed.Seconds} seconds");
+            Console.WriteLine($"Rent T2 generation took {sw.Elapsed.Seconds} seconds");
+
+            sw.Restart();
+            t2Cars.ToList().ForEach(c =>
+            {
+                c.GenerateServiceData(t2Rentals,
+                    Settings.FirstDataCollection,
+                    Settings.SecondDataCollection,
+                    Settings.SecondDataCollection);
+            });
+            Console.WriteLine($"Service T2 data generation took {sw.Elapsed.Seconds} seconds");
 
 
-            //SaveAsJson(t2Cars.Except(t1Cars).Select(c => c.Services).SelectMany(s => s).ToArray(), "t2");
-            //SaveAsScripts(t2Cars.Except(t1Cars), t2Users.Except(t1Users), null, t2Rentals, null, "t2");
+            SaveAsJson(t2Cars.Select(c => c.Services).SelectMany(s => s).ToArray(), "t2");
+            SaveAsScripts(t2AdditionalCars, t2AdditionalUsers, null, t2Rentals, null, null, null, "t2");
 
 
             Console.WriteLine("finished");
@@ -180,7 +177,7 @@ namespace DataGenerator
             }
         }
 
-        public static void SaveAsJson(IEnumerable<ServiceDataModel> services, string periodName = "t0")
+        public static void SaveAsJson(IEnumerable<ServiceDataModel> services, string periodName = "t0") 
         {
             List<string> jsons = services.Select(s => JsonConvert.SerializeObject(s) + ",").ToList();
             
